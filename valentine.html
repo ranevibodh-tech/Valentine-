@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine ❤️</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(135deg, #ff4d6d, #ffb3c6);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* MUSIC TOGGLE */
+#musicToggle {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  background: white;
+  color: #ff4d6d;
+  border-radius: 20px;
+  padding: 8px 14px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* CARD */
+.card {
+  background: white;
+  width: 92%;
+  max-width: 420px;
+  padding: 28px;
+  border-radius: 26px;
+  text-align: center;
+  box-shadow: 0 30px 70px rgba(0,0,0,0.25);
+  z-index: 5;
+  animation: pop 0.5s ease;
+}
+
+@keyframes pop {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+h1 {
+  color: #ff4d6d;
+  margin-bottom: 10px;
+}
+
+p {
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+button {
+  padding: 14px 30px;
+  font-size: 18px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+.yes {
+  background: #ff4d6d;
+  color: white;
+}
+
+.no {
+  background: #e5e5e5;
+  color: #333;
+  position: absolute;
+}
+
+.buttons {
+  position: relative;
+  height: 140px;
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: #ff4d6d;
+}
+
+/* SMOOTHER SLIDER */
+input[type="range"] {
+  transition: all 0.3s ease;
+}
+
+/* BACKGROUND EMOJIS */
+.bg-emoji {
+  position: fixed;
+  font-size: 30px;
+  opacity: 0.85;
+  pointer-events: none;
+  z-index: 1;
+  animation: drift ease-in-out infinite alternate;
+}
+
+@keyframes drift {
+  from { transform: translate(0, 0); }
+  to { transform: translate(70px, -70px); }
+}
+
+/* SOFT BLINK */
+.blink {
+  animation: blink 2.8s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+</style>
+</head>
+
+<body>
+
+<div id="musicToggle">🎵 Music OFF</div>
+<div class="card" id="card"></div>
+
+<audio id="music" loop>
+  <source src="bemybaby.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const NAME = "Salena";
+const card = document.getElementById("card");
+const music = document.getElementById("music");
+const toggle = document.getElementById("musicToggle");
+let playing = false;
+
+/* MUSIC TOGGLE */
+toggle.onclick = () => {
+  if (!playing) {
+    music.play().catch(()=>{});
+    toggle.textContent = "🔊 Music ON";
+  } else {
+    music.pause();
+    toggle.textContent = "🎵 Music OFF";
+  }
+  playing = !playing;
+};
+
+/* BACKGROUND EMOJIS */
+function createBackgroundEmojis(count = 85) {
+  const emojis = ["❤️", "💖", "🧸", "💕"];
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement("div");
+    el.className = "bg-emoji";
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    el.style.left = Math.random() * 100 + "vw";
+    el.style.top = Math.random() * 100 + "vh";
+    el.style.animationDuration = (8 + Math.random() * 12) + "s";
+    document.body.appendChild(el);
+  }
+}
+
+/* SCREENS */
+function screen1() {
+  card.innerHTML = `
+    <h1>Hey ${NAME} ❤️</h1>
+    <p>I have a question for you…</p>
+    <button class="yes" onclick="screen2()">Continue 🧸</button>
+  `;
+}
+
+function screen2() {
+  card.innerHTML = `
+    <h1>Do you like me? 😳</h1>
+    <div class="buttons">
+      <button class="yes" onclick="screen3()">Yes 😊</button>
+      <button class="no" id="noBtn">No 😐</button>
+    </div>
+  `;
+  activateNo();
+}
+
+function screen3() {
+  card.innerHTML = `
+    <h1>How much do you like me? 💕</h1>
+
+    <input id="likeRange" type="range" min="0" max="1000" value="100">
+    <p id="rangeValue">100%</p>
+
+    <p id="wowText" class="blink" style="display:none; font-size:24px; color:#ff4d6d;">
+      WOOOOW You like me that much?? 🥰🥰
+    </p>
+
+    <button class="yes" onclick="screen4()">Next 💖</button>
+  `;
+
+  const range = document.getElementById("likeRange");
+  const valueText = document.getElementById("rangeValue");
+  const wowText = document.getElementById("wowText");
+
+  range.addEventListener("input", () => {
+    valueText.textContent = range.value + "%";
+
+    if (range.value >= 1000) {
+      wowText.style.display = "block";
+    } else {
+      wowText.style.display = "none";
+    }
+  });
+}
+
+function screen4() {
+  card.innerHTML = `
+    <h1>SALENA MY BABY ❤️</h1>
+    <p>Will you be my Valentine on<br><b>14th February 2026</b>?</p>
+    <div class="buttons">
+      <button class="yes" onclick="final()">YES ❤️</button>
+      <button class="no" id="noBtn">NO 🙄</button>
+    </div>
+  `;
+  activateNo();
+}
+
+function final() {
+  card.innerHTML = `
+    <h1 class="blink" style="color:red; font-size:32px;">
+      YAY! I'M THE LUCKIEST PERSON IN THE WORLD!
+    </h1>
+    <p class="blink" style="color:red; font-size:24px; font-weight:bold;">
+      NOW MEET ME TOMORROW<br>
+      AND GET YOUR WARM HUGs AND KISSES<br><br>
+      🥰🥰❤️❤️🎁🤗
+    </p>
+  `;
+}
+
+/* NO BUTTON ESCAPE */
+function activateNo() {
+  const btn = document.getElementById("noBtn");
+  const box = document.querySelector(".buttons");
+  function move() {
+    btn.style.left = Math.random() * (box.clientWidth - btn.offsetWidth) + "px";
+    btn.style.top = Math.random() * (box.clientHeight - btn.offsetHeight) + "px";
+  }
+  btn.addEventListener("mouseover", move);
+  btn.addEventListener("touchstart", e => { e.preventDefault(); move(); });
+}
+
+/* START */
+createBackgroundEmojis(85);
+screen1();
+</script>
+
+</body>     
+</html>
